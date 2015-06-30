@@ -6,5 +6,6 @@ if __name__ == '__main__':
 	while (line):
 		print line
 		command, args = line.split()[0], line.split()[1:]
-		redis_server(command, *args)
+		result = redis_server(command, *args)
+		print result if result else "\n"
 		line = raw_input()
