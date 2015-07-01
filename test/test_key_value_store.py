@@ -14,11 +14,12 @@ class TestKeyValueStore(unittest.TestCase):
 	def setUp(self, *args, **kwargs):
 		# set up a different cache for testing the value_cache functionality
 		# shortDescription retrieves the first line of the docstring of the test
+		# all tests testing the value cache have 'value_cache' in the docstring
 		test_name = self.shortDescription()
 		# 3 of the tests test the value_cache, so initializing the cache accordingly
 		if 'value_cache' in test_name:
 			key_values = {x: y for x, y in zip(
-				xrange(1, 4), [['f'], ['d', 'e'], ['a', 'b', 'c']])}
+				xrange(1, 4), [{'f'}, {'d', 'e'}, {'a', 'b', 'c'}])}
 		else:
 			key_values = {x: n for x, n in zip(
 				['a', 'b', 'c', 'd', 'e'], xrange(0, 5))}
@@ -77,7 +78,3 @@ class TestKeyValueStore(unittest.TestCase):
 			self.assertEqual(self.cache._get_numequalto(x), x)
 		self.cache._add_to_value_cache(1, 'z')
 		self.assertEqual(self.cache._get_numequalto(1), 2)
-
-
-if __name__ == '__main__':
-	unittest.main()

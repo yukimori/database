@@ -10,7 +10,7 @@ class KeyValueStore(object):
 		return self._in_memory_cache[key]
 
 	def __repr__(self):
-		return str(self._in_memory_cache)
+		return self._in_memory_cache.__repr__()
 
 	@property
 	def keys(self):
@@ -27,17 +27,21 @@ class KeyValueStore(object):
 		return self._in_memory_cache.get(key)
 
 	def _add_to_value_cache(self, key, value):
+		# if key is already present
 		if self._in_memory_cache.get(key):
-			self._in_memory_cache[key].append(value)
+			# add the value to the set
+			self._in_memory_cache[key].add(value)
 		else:
+			# else, create a new set with the value as
+			# the only element
 			self._in_memory_cache[key] = {value}
 
 	def _remove_from_value_cache(self, key, value):
 		if self._in_memory_cache.get(key):
-			# remove the value from the list of values associated with key
+			# remove the value from the set of values associated with key
 			self._in_memory_cache[key].remove(value)
 			# if after removing the value, there are no more values
-			# associated with the key, remove the key from value_cache
+			# associated with the key, remove the key entirely from value_cache
 			if not self._in_memory_cache[key]:
 				self._in_memory_cache.pop(key)
 

@@ -13,16 +13,19 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.write_ahead_log = WriteAheadLog()
 
 	def test_add_new_transaction_block(self):
+		"""test that adding a new transaction block works as expected"""
 		self.assertListEqual(self.write_ahead_log.transaction_blocks, [])
 		self.write_ahead_log._add_new_transaction_block()
 		self.assertNotEqual(self.write_ahead_log.transaction_blocks, [])
 
 	def test_has_open_transaction_block(self):
+		"""test that the _has_open_transaction_blocks method works correctly"""
 		self.assertFalse(self.write_ahead_log._has_open_transaction_blocks())
 		self.write_ahead_log._add_new_transaction_block()
 		self.assertTrue(self.write_ahead_log._has_open_transaction_blocks())
 
 	def test_get_last_transaction(self):
+		"""test that we get the correct last open transaction stord in the WAL"""
 		self.assertIsNone(self.write_ahead_log._get_last_transaction())
 		self.write_ahead_log._add_new_transaction_block()
 		last_transaction_block = self.write_ahead_log._get_last_transaction()
@@ -42,6 +45,7 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.assertEqual(last_trans._retrieve('x'), {'prev': None, 'cur': 99})
 
 	def test_key_in_transaction(self):
+		"""test that all the keys present in a given transaction block is returned"""
 		last_trans = self.write_ahead_log._get_last_transaction()
 		self.assertFalse(self.write_ahead_log._key_in_transaction(last_trans, 'z'))
 		self.write_ahead_log._add_new_transaction_block()
@@ -51,6 +55,7 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.assertFalse(self.write_ahead_log._key_in_transaction(last_trans, 'a'))
 
 	def test_add_new_transaction(self):
+		"""test that adding a new transaction to the WAL works as expected"""
 		self.write_ahead_log._add_new_transaction_block()
 		self.write_ahead_log._add_new_transaction(prev=None, key='a', value=10)
 		last_trans = self.write_ahead_log._get_last_transaction()
@@ -68,6 +73,7 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.assertEqual(last_trans._retrieve('a'), {'prev': 10, 'cur': None})
 
 	def test_commit(self):
+		"""test that a commit closes all open transaction blocks"""
 		self.assertIsNone(self.write_ahead_log._commit())
 		self.write_ahead_log._add_new_transaction_block()
 		self.write_ahead_log._add_new_transaction(prev=None, key='a', value=10)
@@ -81,6 +87,7 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.assertEqual(self.write_ahead_log.transaction_blocks, [])
 
 	def test_rollback(self):
+		"""test that rollbacks work as expected"""
 		self.assertIsNone(self.write_ahead_log._rollback())
 		self.write_ahead_log._add_new_transaction_block()
 		self.write_ahead_log._add_new_transaction(prev=None, key='a', value=10)
@@ -98,6 +105,3 @@ class TestWriteAheadLog(unittest.TestCase):
 		self.write_ahead_log._rollback()
 		last_trans = self.write_ahead_log._get_last_transaction()
 		self.assertIsNone(last_trans)
-
-if __name__ == '__main__':
-	unittest.main()
