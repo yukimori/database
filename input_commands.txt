@@ -1,0 +1,21 @@
+set a 99
+begin
+set a 33
+set b 66
+get b
+begin
+set a 44
+set c 44
+set b 44
+numequalto 44
+unset b
+get b
+numequalto 44
+get a
+rollback
+get b
+get c
+get a
+rollback
+get a
+end
